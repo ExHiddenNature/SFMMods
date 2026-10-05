@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<Product>SFM Custom Missions Manager</Product>
+		<Version>1.0.0</Version>
+		<Description>Allows you to easily manage custom missions v1 and v2 with hot reloading and a GUI.</Description>
+
+		<IsPluginWithUI>true</IsPluginWithUI>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Reference Include="SFM_custom_mission">
+			<HintPath>$(PluginsFolder)\SFM_custom_mission.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="SFM_custom_mission_v2">
+			<HintPath>$(PluginsFolder)\SFM_custom_mission_v2.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+	</ItemGroup>
+</Project>

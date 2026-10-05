@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<Product>SFM Custom Missions Fix</Product>
+		<Version>1.0.0</Version>
+		<Description>Fixes custom mission loading errors in SFM.</Description>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Reference Include="SFM_custom_mission">
+			<HintPath>$(PluginsFolder)\SFM_custom_mission.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+	</ItemGroup>
+</Project>

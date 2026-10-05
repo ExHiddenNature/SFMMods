@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<Product>SFM Window Resize</Product>
+		<Version>1.0.0</Version>
+		<Description>Lets you arbitrarily resize the game window when in windowed mode. Including launch options for customizing the size and position of the window at game launch.</Description>
+	</PropertyGroup>
+</Project>

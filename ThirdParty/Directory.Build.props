@@ -1,0 +1,57 @@
+<Project>
+	<!--
+		This file isolates ThirdParty projects from inheriting the root Directory.Build.props
+		(preventing package version downgrade conflicts and root game folder validations),
+		while mapping standard Debug and Release configurations to UniverseLib's BepInEx IL2CPP build
+		without modifying submodule files.
+	-->
+	<PropertyGroup Condition="'$(Configuration)' == 'Debug' or '$(Configuration)' == 'Release' or '$(Configuration)' == ''">
+		<TargetFramework>net6.0</TargetFramework>
+		<OutputPath>$(MSBuildThisFileDirectory)UniverseLib\Release\UniverseLib.Il2Cpp.Interop\</OutputPath>
+		<DefineConstants>$(DefineConstants);CPP;INTEROP</DefineConstants>
+		<AssemblyName>UniverseLib.BIE.IL2CPP.Interop</AssemblyName>
+	</PropertyGroup>
+
+	<ItemGroup Condition="('$(Configuration)' == 'Debug' or '$(Configuration)' == 'Release' or '$(Configuration)' == '') and '$(MSBuildProjectName)' == 'UniverseLib'">
+		<PackageReference Include="Il2CppInterop.Common" Version="1.0.0" />
+		<PackageReference Include="Il2CppInterop.Runtime" Version="1.0.0" />
+
+		<Reference Include="Il2Cppmscorlib">
+			<HintPath>$(MSBuildThisFileDirectory)UniverseLib\lib\interop\Il2Cppmscorlib.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="Il2CppSystem.Core">
+			<HintPath>$(MSBuildThisFileDirectory)UniverseLib\lib\interop\Il2CppSystem.Core.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="UnityEngine">
+			<HintPath>$(MSBuildThisFileDirectory)UniverseLib\lib\interop\UnityEngine.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="UnityEngine.CoreModule">
+			<HintPath>$(MSBuildThisFileDirectory)UniverseLib\lib\interop\UnityEngine.CoreModule.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="UnityEngine.PhysicsModule">
+			<HintPath>$(MSBuildThisFileDirectory)UniverseLib\lib\interop\UnityEngine.PhysicsModule.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="UnityEngine.TextRenderingModule">
+			<HintPath>$(MSBuildThisFileDirectory)UniverseLib\lib\interop\UnityEngine.TextRenderingModule.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="UnityEngine.UI">
+			<HintPath>$(MSBuildThisFileDirectory)UniverseLib\lib\interop\UnityEngine.UI.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="UnityEngine.UIModule">
+			<HintPath>$(MSBuildThisFileDirectory)UniverseLib\lib\interop\UnityEngine.UIModule.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+		<Reference Include="UnityEngine.IMGUIModule">
+			<HintPath>$(MSBuildThisFileDirectory)UniverseLib\lib\interop\UnityEngine.IMGUIModule.dll</HintPath>
+			<Private>False</Private>
+		</Reference>
+	</ItemGroup>
+</Project>
+

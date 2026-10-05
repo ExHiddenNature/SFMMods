@@ -1,0 +1,3 @@
+[submodule "ThirdParty/UniverseLib"]
+	path = ThirdParty/UniverseLib
+	url = https://github.com/yukieiji/UniverseLib.git

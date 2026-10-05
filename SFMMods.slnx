@@ -1,0 +1,6 @@
+<Solution>
+	<Project Path="src/SFM.CustomMissionsFix/SFM.CustomMissionsFix.csproj" />
+	<Project Path="src/SFM.WindowResize/SFM.WindowResize.csproj" />
+	<Project Path="src/SFM.CustomMissionsManager/SFM.CustomMissionsManager.csproj" />
+	<Project Path="ThirdParty/UniverseLib/src/UniverseLib.csproj" />
+</Solution>

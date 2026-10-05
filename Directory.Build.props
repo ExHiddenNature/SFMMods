@@ -1,0 +1,51 @@
+<Project>
+	<Import Project="$(MSBuildThisFileDirectory)Directory.Build.props.user" Condition="Exists('$(MSBuildThisFileDirectory)Directory.Build.props.user')" />
+
+	<PropertyGroup Condition="'$(GameFolder)' == ''">
+		<GameFolder>$(SFM_GAME_DIR)</GameFolder>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(PluginFolder)' == ''">
+		<PluginFolder>plugins</PluginFolder>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(IsPluginWithUI)' == ''">
+		<IsPluginWithUI>false</IsPluginWithUI>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<LangVersion>latest</LangVersion>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<RestoreAdditionalProjectSources>
+			https://api.nuget.org/v3/index.json;
+			https://nuget.bepinex.dev/v3/index.json;
+			https://nuget.samboy.dev/v3/index.json
+		</RestoreAdditionalProjectSources>
+
+		<BepInExFolder>$(GameFolder)\BepInEx</BepInExFolder>
+		<PluginsFolder>$(BepInExFolder)\$(PluginFolder)</PluginsFolder>
+		<InteropFolder>$(BepInExFolder)\interop</InteropFolder>
+	</PropertyGroup>
+
+	<Target Name="ValidateGamePaths" BeforeTargets="PrepareForBuild;BeforeBuild">
+		<Error Condition="'$(GameFolder)' == '' or !Exists('$(GameFolder)')" Text="[SFM Build Error] Game directory could not be resolved. Set 'GameFolder' in 'Directory.Build.props.user' or define the 'SFM_GAME_DIR' environment variable. Current value: '$(GameFolder)'" />
+		<Error Condition="!Exists('$(InteropFolder)\Assembly-CSharp.dll')" Text="[SFM Build Error] Missing required interop assembly at: '$(InteropFolder)\Assembly-CSharp.dll'. Please run the game once with BepInEx and ensure Il2CppInterop/BepInEx has generated interop assemblies for the game." />
+	</Target>
+
+	<ItemGroup Condition="'$(IsPluginWithUI)' == 'true'">
+		<ProjectReference Include="$(MSBuildThisFileDirectory)ThirdParty\UniverseLib\src\UniverseLib.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="BepInEx.Unity.IL2CPP" Version="6.0.0-be.*" IncludeAssets="compile" />
+		<PackageReference Include="BepInEx.PluginInfoProps" Version="2.*" />
+	</ItemGroup>
+
+	<ItemGroup Condition="Exists('$(InteropFolder)\Assembly-CSharp.dll')">
+		<Reference Include="$(InteropFolder)\*.dll">
+			<Private>False</Private>
+		</Reference>
+	</ItemGroup>
+</Project>
