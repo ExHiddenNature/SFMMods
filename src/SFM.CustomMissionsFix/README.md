@@ -4,3 +4,5 @@ Fixes an issue with the [Custom Missions v1](https://f95zone.to/threads/secret-f
 
 > [!WARNING]
 > Does not work with the CustomMissionsV1 emulator built into CustomMissionsV2. You **must** disable the `CustomMissions2/CM1 Emulator` script.
+
+![](../../images/custommissionsfix_showcase.png)
