@@ -38,28 +38,24 @@ jobs:
       - name: Build project (Release)
         run: dotnet build ${{ matrix.project.path }} -c Release
 
-      - name: Package mod
+      - name: Prepare build artifacts
         shell: pwsh
         run: |
           $modName = "${{ matrix.project.name }}"
           $binDir = "src/$modName/bin/Release"
           $distDir = "dist"
-          $stagingDir = "staging"
 
           New-Item -ItemType Directory -Path $distDir -Force | Out-Null
-          New-Item -ItemType Directory -Path $stagingDir -Force | Out-Null
 
           Get-ChildItem -Path $binDir -File | Where-Object { $_.Extension -in '.dll', '.pdb' } | ForEach-Object {
-            Copy-Item -Path $_.FullName -Destination $stagingDir -Force
+            Copy-Item -Path $_.FullName -Destination $distDir -Force
           }
-
-          Compress-Archive -Path "$stagingDir\*" -DestinationPath "$distDir\$modName.zip" -Force
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.project.name }}
-          path: dist/${{ matrix.project.name }}.zip
+          path: dist/
           if-no-files-found: error
 
   release:
@@ -76,10 +72,15 @@ jobs:
         with:
           path: release-assets
 
-      - name: Prepare release files
+      - name: Package release archives
         run: |
           mkdir -p release-files
-          find release-assets -type f -name "*.zip" -exec cp {} release-files/ \;
+          for dir in release-assets/*/; do
+            [ -d "$dir" ] || continue
+            mod_name=$(basename "$dir")
+            echo "Packaging $mod_name..."
+            (cd "$dir" && zip -r "$GITHUB_WORKSPACE/release-files/${mod_name}.zip" *)
+          done
           ls -la release-files/
 
       - name: Release
