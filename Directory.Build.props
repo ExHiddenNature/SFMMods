@@ -5,6 +5,10 @@
 		<GameFolder>$(SFM_GAME_DIR)</GameFolder>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(GameFolder)' == '' and Exists('$(MSBuildThisFileDirectory)lib\BepInEx\interop\Assembly-CSharp.dll')">
+		<GameFolder>$(MSBuildThisFileDirectory)lib</GameFolder>
+	</PropertyGroup>
+
 	<PropertyGroup Condition="'$(PluginFolder)' == ''">
 		<PluginFolder>plugins</PluginFolder>
 	</PropertyGroup>

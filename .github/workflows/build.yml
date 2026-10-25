@@ -1,0 +1,90 @@
+name: Build
+
+on:
+  push:
+    branches: ["main"]
+    tags: ["v*"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build (${{ matrix.project.name }})
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        project:
+          - name: SFM.CustomMissionsFix
+            path: src/SFM.CustomMissionsFix/SFM.CustomMissionsFix.csproj
+          - name: SFM.CustomMissionsManager
+            path: src/SFM.CustomMissionsManager/SFM.CustomMissionsManager.csproj
+          - name: SFM.WindowResize
+            path: src/SFM.WindowResize/SFM.WindowResize.csproj
+
+    steps:
+      - name: Checkout repository recursively
+        uses: actions/checkout@v7
+        with:
+          submodules: recursive
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 6.0.x
+
+      - name: Build project (Release)
+        run: dotnet build ${{ matrix.project.path }} -c Release
+
+      - name: Package mod
+        shell: pwsh
+        run: |
+          $modName = "${{ matrix.project.name }}"
+          $binDir = "src/$modName/bin/Release"
+          $distDir = "dist"
+          $stagingDir = "staging"
+
+          New-Item -ItemType Directory -Path $distDir -Force | Out-Null
+          New-Item -ItemType Directory -Path $stagingDir -Force | Out-Null
+
+          Get-ChildItem -Path $binDir -File | Where-Object { $_.Extension -in '.dll', '.pdb' } | ForEach-Object {
+            Copy-Item -Path $_.FullName -Destination $stagingDir -Force
+          }
+
+          Compress-Archive -Path "$stagingDir\*" -DestinationPath "$distDir\$modName.zip" -Force
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: ${{ matrix.project.name }}
+          path: dist/${{ matrix.project.name }}.zip
+          if-no-files-found: error
+
+  release:
+    name: Create Release
+    needs: build
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v8
+        with:
+          path: release-assets
+
+      - name: Prepare release files
+        run: |
+          mkdir -p release-files
+          find release-assets -type f -name "*.zip" -exec cp {} release-files/ \;
+          ls -la release-files/
+
+      - name: Release
+        uses: softprops/action-gh-release@v3
+        with:
+          fail_on_unmatched_files: true
+          generate_release_notes: true
+          files: release-files/*.zip
