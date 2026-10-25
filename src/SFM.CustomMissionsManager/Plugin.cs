@@ -81,7 +81,7 @@ public class Plugin : BasePlugin
 		{
 			UIBase = UniversalUI.RegisterUI(MyPluginInfo.PLUGIN_GUID, null);
 			Panel = new MissionManagerPanel(UIBase);
-			Panel.SetActive(false); // starts hidden
+			Panel.SetActive(ConfigService.IsFirstRun); // Start visible on first run, otherwise hide on launch
 			Log.LogInfo($"[SFM Custom Missions Manager] UI registered. Press {Hotkey} to toggle manager window.");
 		}
 		catch (Exception ex)
